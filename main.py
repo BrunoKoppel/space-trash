@@ -19,15 +19,15 @@ FPS = 60
 game_clock = pygame.time.Clock()
 game_screen_width = 1280
 game_screen_height = 720
+zoom = 2
 
 
 # Initialize pygame and create window
 pygame.init()
 pygame.mixer.init()
-screen = pygame.display.set_mode(WINDOW_SIZE)
-zoom = 2
+screen = pygame.display.set_mode((game_screen_width, game_screen_height))
 display = pygame.Surface(int((game_screen_width) / zoom),int((game_screen_height) / zoom))
-pygame.display.set_caption('Game')
+pygame.display.set_caption('Empire Simulator')
 clock = pygame.time.Clock()
 
 player_rect = pygame.Rect(0, 0, 5, 16)
@@ -69,8 +69,10 @@ def move(rect, movement, tiles):
   return rect, collision_direction
 
 def scrollMap(x, y):
+    scroll[0] = player_rect.x - int(WINDOW_SIZE[0]/ (zoom * 2)) + 2
+    scroll[1] = player_rect.y - int(WINDOW_SIZE[1]/ (zoom * 2)) + 5
 
-mouvement_speed = 2
+movement_speed = 2
 moving_right = False
 moving_left = False
 moving_up = False
@@ -173,24 +175,23 @@ while running:
 
   # scroll[0] += ((player_rect.x - int(WINDOW_SIZE[0]/ (zoom * 2)) + 2) - scroll[0]) / 12
   # scroll[1] += ((player_rect.y - int(WINDOW_SIZE[1]/ (zoom * 2)) + 5) - scroll[1]) / 12
-  scroll[0] = player_rect.x - int(WINDOW_SIZE[0]/ (zoom * 2)) + 2
-  scroll[1] = player_rect.y - int(WINDOW_SIZE[1]/ (zoom * 2)) + 5
+
   
-  player_mouvement = [0, 0]
+  player_movement = [0, 0]
   
   if moving_right:
-    player_mouvement[0] += mouvement_speed
+    player_movement[0] += movement_speed
   if moving_left:
-    player_mouvement[0] -= mouvement_speed
+    player_movement[0] -= movement_speed
   if moving_down:
-    player_mouvement[1] += 5    
+    player_movement[1] += 5    
   player_y_momentum += 0.2
   if player_y_momentum > 5:
     player_y_momentum = 5
       
-  player_mouvement[1] += player_y_momentum
+  player_movement[1] += player_y_momentum
   
-  player_rect, collision_direction = move(player_rect, player_mouvement, tile_rect)
+  player_rect, collision_direction = move(player_rect, player_movement, tile_rect)
 
   if collision_direction['down']:
     air_timer = 0
