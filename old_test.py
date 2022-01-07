@@ -4,29 +4,17 @@ import sys
 from game_maps.demo_maps import DemoMaps
 from pygame.locals import *
 
-# Define some colors
-BLACK    = (   0,   0,   0)
-WHITE    = ( 255, 255, 255)
-GREEN    = (   0, 255,   0)
-RED      = ( 255,   0,   0)
-BLUE     = (   0,   0, 255)
-
-# Loop until the user clicks the close button.
-is_game_running = True
+# def scrollMap(x, y):
+  
+WINDOW_SIZE = (1280, 720)
 FPS = 60
-
-# Used to manage how fast the screen updates
-game_clock = pygame.time.Clock()
-game_screen_width = 1280
-game_screen_height = 720
-
 
 # Initialize pygame and create window
 pygame.init()
 pygame.mixer.init()
 screen = pygame.display.set_mode(WINDOW_SIZE)
-zoom = 2
-display = pygame.Surface(int((game_screen_width) / zoom),int((game_screen_height) / zoom))
+zoom = 1
+display = pygame.Surface((int(WINDOW_SIZE[0] / zoom), int(WINDOW_SIZE[1] / zoom)))
 pygame.display.set_caption('Game')
 clock = pygame.time.Clock()
 
@@ -34,6 +22,11 @@ player_rect = pygame.Rect(0, 0, 5, 16)
 player_img = pygame.transform.scale(pygame.image.load('assets/player_20x20.png'), (16,16)).convert()
 grass_img = pygame.transform.scale(pygame.image.load('assets/grass_20x20.png'), (16,16)).convert()
 dirt_img = pygame.transform.scale(pygame.image.load('assets/dirt_20x20.png'), (16,16)).convert()
+
+# 0 = Air
+# 1 = Grass
+# 2 = Dirt
+
 game_map = DemoMaps.dirt_platform
 
 def collision_test(rect,tiles):
@@ -67,8 +60,6 @@ def move(rect, movement, tiles):
       collision_direction['up'] = True
           
   return rect, collision_direction
-
-def scrollMap(x, y):
 
 mouvement_speed = 2
 moving_right = False
@@ -128,8 +119,8 @@ while running:
     # Proccess to register Mouse clicks Down
     if event.type == MOUSEBUTTONDOWN:
       print("Event Key => " + str(event))
-      if event.button == 1:
-        scrollMap(event.pos[0],event.pos[1])
+      # if event.button == 1:
+        # scrollMap(event.pos[0],event.pos[1])
 
       
     # Proccess to register Mouse click Up
