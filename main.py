@@ -13,24 +13,27 @@ BLUE     = (   0,   0, 255)
 
 # Loop until the user clicks the close button.
 is_game_running = True
-FPS = 60
 
 # Used to manage how fast the screen updates
+FPS = 60
 game_clock = pygame.time.Clock()
+
+# Display Settings
 game_screen_width = 1280
 game_screen_height = 720
+WINDOW_SIZE = (game_screen_width, game_screen_height)
 zoom = 2
 
 
 # Initialize pygame and create window
 pygame.init()
 pygame.mixer.init()
-screen = pygame.display.set_mode((game_screen_width, game_screen_height))
-display = pygame.Surface(int((game_screen_width) / zoom),int((game_screen_height) / zoom))
+screen = pygame.display.set_mode(WINDOW_SIZE)
+display = pygame.Surface((int((game_screen_width / zoom)),int((game_screen_height / zoom))))
 pygame.display.set_caption('Empire Simulator')
 clock = pygame.time.Clock()
 
-player_rect = pygame.Rect(0, 0, 5, 16)
+camera = pygame.Rect(0, 0, 5, 16)
 player_img = pygame.transform.scale(pygame.image.load('assets/player_20x20.png'), (16,16)).convert()
 grass_img = pygame.transform.scale(pygame.image.load('assets/grass_20x20.png'), (16,16)).convert()
 dirt_img = pygame.transform.scale(pygame.image.load('assets/dirt_20x20.png'), (16,16)).convert()
@@ -69,8 +72,8 @@ def move(rect, movement, tiles):
   return rect, collision_direction
 
 def scrollMap(x, y):
-    scroll[0] = player_rect.x - int(WINDOW_SIZE[0]/ (zoom * 2)) + 2
-    scroll[1] = player_rect.y - int(WINDOW_SIZE[1]/ (zoom * 2)) + 5
+    scroll[0] = camera.x - int(WINDOW_SIZE[0]/ (zoom * 2)) + 2
+    scroll[1] = camera.y - int(WINDOW_SIZE[1]/ (zoom * 2)) + 5
 
 movement_speed = 2
 moving_right = False
@@ -126,7 +129,6 @@ while running:
         print("Event Key => " + str(event.key))
         moving_down = False
 
-
     # Proccess to register Mouse clicks Down
     if event.type == MOUSEBUTTONDOWN:
       print("Event Key => " + str(event))
@@ -173,8 +175,8 @@ while running:
         x += 1
       y += 1
 
-  # scroll[0] += ((player_rect.x - int(WINDOW_SIZE[0]/ (zoom * 2)) + 2) - scroll[0]) / 12
-  # scroll[1] += ((player_rect.y - int(WINDOW_SIZE[1]/ (zoom * 2)) + 5) - scroll[1]) / 12
+  # scroll[0] += ((camera.x - int(WINDOW_SIZE[0]/ (zoom * 2)) + 2) - scroll[0]) / 12
+  # scroll[1] += ((camera.y - int(WINDOW_SIZE[1]/ (zoom * 2)) + 5) - scroll[1]) / 12
 
   
   player_movement = [0, 0]
@@ -191,7 +193,7 @@ while running:
       
   player_movement[1] += player_y_momentum
   
-  player_rect, collision_direction = move(player_rect, player_movement, tile_rect)
+  camera, collision_direction = move(camera, player_movement, tile_rect)
 
   if collision_direction['down']:
     air_timer = 0
@@ -202,8 +204,8 @@ while running:
   if collision_direction['up']:
     player_y_momentum = 0
                     
-  display.blit(player_img, (player_rect.x - scroll[0], player_rect.y - scroll[1]))
-  #pygame.draw.rect(display,(255, 255, 255),player_rect)
+  display.blit(player_img, (camera.x - scroll[0], camera.y - scroll[1]))
+  #pygame.draw.rect(display,(255, 255, 255),camera)
 
   #print(air_timer)      
   screen.blit(pygame.transform.scale(display,WINDOW_SIZE),(0,0))
